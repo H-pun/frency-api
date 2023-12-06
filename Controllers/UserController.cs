@@ -60,6 +60,7 @@ namespace Frency.Controllers
                 return new ErrorApiResponse(ex.InnerException == null ? ex.Message : ex.InnerException.Message);
             }
         }
+        [AllowAnonymous]
         [HttpPost("register")]
         public override Task<ActionResult> Create(RegisterUserRequest model)
         {
