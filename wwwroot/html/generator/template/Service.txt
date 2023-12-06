@@ -1,0 +1,16 @@
+using Frency.Base;
+using Frency.DataAccess.Entities;
+using Frency.DataAccess.Models;
+
+namespace Frency.DataAccess.Services
+{
+    public interface ICustomNameService : IBaseService<CustomName>
+    {
+
+    }
+    public class CustomNameService : BaseService<CustomName>, ICustomNameService
+    {
+        public CustomNameService(AppDbContext appDbContext) : base(appDbContext) { }
+
+    }
+}

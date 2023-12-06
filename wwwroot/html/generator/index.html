@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Sealab Model Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        #input-container {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        #result-container {
+            margin-top: 20px;
+        }
+
+        #result-container h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        #file-list {
+            margin-bottom: 10px;
+        }
+
+        #file-list a {
+            display: block;
+            margin-bottom: 5px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #download-all-button {
+            background-color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Sealab Model Generator</h1>
+    <div id="input-container">
+        <label for="file-name">Nama fitur:</label>
+        <input type="text" id="file-name"><br><br>
+        <button id="generate-button">Generate</button>
+    </div>
+
+    <div id="result-container" style="display: none;">
+        <h2>Generated C# Files</h2>
+        <div id="file-list"></div>
+        <button id="download-all-button">Download All</button>
+        <button id="reset-button">Reset</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#generate-button').click(function () {
+                var modelName = $('#file-name').val();
+                $('#file-list').empty();
+                $.ajax({
+                    url: 'process.php',
+                    type: 'POST',
+                    data: {
+                        modelName: modelName
+                    },
+                    success: (response) => {
+                        data = JSON.parse(response).data;
+                        data.forEach(script => {
+                            var downloadLink = $('<a>');
+                            downloadLink.attr('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(script.fileContext));
+                            downloadLink.attr('download', script.fileName);
+                            downloadLink.text(script.fileName);
+
+                            $('#file-list').append(downloadLink);
+                            $('#file-list').append('<br>');
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(error);
+                    }
+                })
+
+                $('#input-container').hide();
+                $('#result-container').show();
+            });
+
+            $('#download-all-button').click(function () {
+                $('#file-list a').each(function () {
+                    $(this)[0].click();
+                });
+            });
+
+            $('#reset-button').click(function () {
+                $('#file-name').val('');
+                $('#input-container').show();
+                $('#result-container').hide();
+            });
+        });
+    </script>
+</body>
+
+</html>
